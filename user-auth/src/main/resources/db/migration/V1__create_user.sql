@@ -1,4 +1,5 @@
-create table user(
+
+CREATE TABLE user(
     id BIGINT PRIMARY Key AUTO_INCREMENT,
     user_name VARCHAR(50) NOT NULL,
     email VARCHAR(100) UNIQUE NOT NULL,
@@ -10,5 +11,18 @@ create table user(
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_by varchar(50) NOT NULL,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
-
     );
+
+INSERT INTO user VALUES (
+            1,
+            "yousef",
+            "yousef@123.com",
+            "$2a$12$bF2oN8yOshPz5FYyfgv1uOhVgZGFZ90vguBh9Jsxl/UzCOmZk8ATG",
+            "Yousef Abdelrahman",
+            "ADMIN",
+            1,
+            "system",
+            now(),
+            "system",
+    		now()
+            );

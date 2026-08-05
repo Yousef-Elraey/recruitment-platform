@@ -1,4 +1,4 @@
-package com.user_auth.users.entity;
+package com.user_auth.entity;
 
 public enum Role {
     HR, INTERVIEWER, ADMIN

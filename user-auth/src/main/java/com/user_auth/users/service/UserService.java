@@ -1,42 +1,112 @@
 package com.user_auth.users.service;
 
 import com.user_auth.common.exception.RecruitmentBusinessException;
-import com.user_auth.auth.dto.request.RegisterRequest;
+import com.user_auth.common.security.JwtService;
+import com.user_auth.users.dto.request.UpdateRoleRequest;
+import com.user_auth.users.dto.request.UpdateUserRequest;
 import com.user_auth.users.dto.response.GetUserResponse;
-import com.user_auth.auth.dto.response.RegisterResponse;
-import com.user_auth.users.entity.User;
+import com.user_auth.entity.User;
+import com.user_auth.users.dto.response.PageResponse;
+import com.user_auth.users.dto.response.UpdateUserResponse;
 import com.user_auth.users.mapper.UserMapper;
 import com.user_auth.users.repository.UserRepository;
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+
+import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
 public class UserService {
     private final UserRepository userRepository;
     private final UserMapper userMapper;
+    private final JwtService jwtService;
+    private final PasswordEncoder encoder;
 
-    public List<GetUserResponse> getAllUsers() {
-       List<User> userList = userRepository.findAll();
-        if (userList.isEmpty()){
-        throw new RecruitmentBusinessException(HttpStatus.NOT_FOUND,"NO_USERS_FOUND","the users table is empty");
-        }
-       return userMapper.toGetUserResponses(userList);
+    public PageResponse<GetUserResponse> getAllUsers(int page, int size, String sortBy, String direction) {
+
+
+        Sort sort = direction.equalsIgnoreCase("desc")
+                ? Sort.by(sortBy).descending()
+                : Sort.by(sortBy).ascending();
+
+        Pageable pageable = PageRequest.of(page, size, sort);
+        Page<User> userPage = userRepository.findAll(pageable);
+
+        if (userPage.isEmpty())
+            throw new RecruitmentBusinessException(HttpStatus.NOT_FOUND, "404 NOT_FOUND", "no users found");
+        List<User> userList = userPage.getContent();
+        List<GetUserResponse> response = userMapper.toGetUserResponses(userList);
+
+        return PageResponse.<GetUserResponse>builder()
+                .data(response)
+                .page(userPage.getNumber())
+                .size(userPage.getSize())
+                .totalElements(userPage.getTotalElements())
+                .totalPages(userPage.getTotalPages())
+                .first(userPage.isFirst())
+                .last(userPage.isLast())
+                .build();
     }
 
     public GetUserResponse getUserById(Long id) {
-    return userMapper.toGetUserResponse(userRepository.findById(id)
-                        .orElseThrow(()->
-                                new RecruitmentBusinessException(HttpStatus.NOT_FOUND
-                                ,"USER_NOT_FOUND"
-                                ,"user with id ("+id+") not found")));
+
+        return userMapper.toGetUserResponse(userRepository.findById(id)
+                .orElseThrow(() ->
+                        new RecruitmentBusinessException(HttpStatus.NOT_FOUND
+                                , "USER_NOT_FOUND"
+                                , "user with id (" + id + ") not found")));
     }
 
-    public RegisterResponse register(RegisterRequest request) {
-        User user = userMapper.toUser(request);
+    public UpdateUserResponse updateUserData(Long id, UpdateUserRequest updateUserRequest) {
+        User user = userRepository.findById(id).orElseThrow(() ->
+                new RecruitmentBusinessException(HttpStatus.NOT_FOUND, "USER_NOT_FOUND", "user with id (" + id + ") enter not found"));
+
+        user.setUserName(updateUserRequest.getUserName())
+                .setEmail(updateUserRequest.getEmail())
+                .setPassword(encoder.encode(updateUserRequest.getPassword()))
+                .setFullName(updateUserRequest.getFullName())
+                .setRole(updateUserRequest.getRole())
+                .setActivity(true)
+                .setUpdatedAt(LocalDateTime.now());
         userRepository.save(user);
-       return userMapper.toRegisterResponse(user);
+        return userMapper.toUpdateUserResponse(user);
+    }
+
+    public UpdateUserResponse updateUserRole(Long id, UpdateRoleRequest request) {
+       User user = userRepository.findById(id).orElseThrow(()->
+                new RecruitmentBusinessException(HttpStatus.NOT_FOUND, "USER_NOT_FOUND", "user with id (" + id + ") not found"));
+            user.setRole(request.getRole());
+       userRepository.save(user);
+       return userMapper.toUpdateUserResponse(user);
+    }
+
+    public GetUserResponse getCurrentUser(HttpServletRequest request) {
+         String authHeader = request.getHeader("Authorization");
+         if (authHeader == null || !authHeader.startsWith("Bearer "))
+             throw new RecruitmentBusinessException(HttpStatus.FORBIDDEN,"Not_Allowed","this token is not allowed");
+         String token = authHeader.substring(7);
+        String email = jwtService.extractUsername(token);
+       User currentUser = userRepository.findByEmail(email).orElseThrow(()->
+               new RecruitmentBusinessException(HttpStatus.NOT_FOUND,"NOT_FOUND","user with email( "+email+" )is not found"));
+
+       return userMapper.toGetUserResponse(currentUser);
+    }
+
+    public void deleteUser(Long id) {
+       User user = userRepository.findById(id).orElseThrow(()->
+                new RecruitmentBusinessException(HttpStatus.NOT_FOUND,"NOT_FOUND","user with id (\" + id + \") not found"));
+        user.setActivity(false);
+        userRepository.save(user);
     }
 }

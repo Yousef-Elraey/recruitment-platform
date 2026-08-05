@@ -1,6 +1,6 @@
 package com.user_auth.users.dto.response;
 
-import com.user_auth.users.entity.Role;
+import com.user_auth.entity.Role;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;

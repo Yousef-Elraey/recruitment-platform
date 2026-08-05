@@ -1,6 +1,7 @@
-package com.user_auth.users.entity;
+package com.user_auth.entity;
 
-import com.user_auth.base_entity.BaseEntity;
+import com.user_auth.entity.BaseEntity;
+import com.user_auth.entity.Role;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;

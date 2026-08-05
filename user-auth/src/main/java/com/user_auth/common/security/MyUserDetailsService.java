@@ -1,6 +1,6 @@
-package com.user_auth.common.security.user;
+package com.user_auth.common.security;
 
-import com.user_auth.users.entity.User;
+import com.user_auth.entity.User;
 import com.user_auth.users.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.userdetails.UserDetails;

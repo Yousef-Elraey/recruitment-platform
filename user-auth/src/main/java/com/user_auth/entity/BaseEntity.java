@@ -1,4 +1,4 @@
-package com.user_auth.base_entity;
+package com.user_auth.entity;
 
 import jakarta.persistence.*;
 import lombok.*;
