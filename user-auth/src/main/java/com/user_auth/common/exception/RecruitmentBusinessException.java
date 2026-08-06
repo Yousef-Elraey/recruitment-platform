@@ -4,19 +4,19 @@ import org.springframework.http.HttpStatus;
 
 public class RecruitmentBusinessException extends RuntimeException {
     private final HttpStatus status;
-    private final String code;
+    private final String errorCode;
 
-    public RecruitmentBusinessException(HttpStatus status, String code, String message) {
+    public RecruitmentBusinessException(HttpStatus status, String errorCode, String message) {
         super(message);
         this.status = status;
-        this.code = code;
+        this.errorCode = errorCode;
     }
 
     public HttpStatus getStatus() {
         return status;
     }
 
-    public String getCode() {
-        return code;
+    public String getErrorCode() {
+        return errorCode;
     }
 }

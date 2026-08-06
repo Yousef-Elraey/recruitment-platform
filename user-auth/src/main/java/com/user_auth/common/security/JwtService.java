@@ -1,5 +1,6 @@
 package com.user_auth.common.security;
 
+import com.user_auth.entity.User;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.io.Decoders;
@@ -23,17 +24,35 @@ public class JwtService {
     private long jwtExpiration;
 
     public String generateToken(UserDetails userDetails) {
-        return generateToken(new HashMap<>(), userDetails);
+
+        MyUserDetails myUserDetails = (MyUserDetails) userDetails;
+
+        Map<String, Object> claims = new HashMap<>();
+
+        claims.put("userId", myUserDetails.getId());
+        claims.put("role", myUserDetails.getRole().name());
+
+        return generateToken(claims, userDetails);
     }
-
-    public String generateToken(
-            Map<String, Object> extraClaims,
-            UserDetails userDetails
-    ) {
-
+    public String generateToken(Map<String, Object> extraClaims, UserDetails userDetails) {
         return Jwts.builder()
                 .claims(extraClaims)
                 .subject(userDetails.getUsername())
+                .issuedAt(new Date())
+                .expiration(new Date(System.currentTimeMillis() + jwtExpiration))
+                .signWith(getKey())
+                .compact();
+    }
+    public String generateToken(User user) {
+
+        Map<String, Object> claims = new HashMap<>();
+
+        claims.put("userId", user.getId());
+        claims.put("role", user.getRole().name());
+
+        return Jwts.builder()
+                .claims(claims)
+                .subject(user.getEmail())
                 .issuedAt(new Date())
                 .expiration(new Date(System.currentTimeMillis() + jwtExpiration))
                 .signWith(getKey())
@@ -75,5 +94,15 @@ public class JwtService {
 
     public Date extractExpiration(String token) {
         return extractClaim(token, Claims::getExpiration);
+    }
+
+    public Long extractUserId(String token) {
+        return extractClaim(token,
+                claims -> claims.get("userId", Long.class));
+    }
+
+    public String extractRole(String token) {
+        return extractClaim(token,
+                claims -> claims.get("role", String.class));
     }
 }

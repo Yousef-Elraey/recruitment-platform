@@ -160,7 +160,7 @@ class AuthServiceTest {
                 () -> authService.login(request));
 
         assertEquals(HttpStatus.FORBIDDEN, ex.getStatus());
-        verify(jwtService, never()).generateToken(any());
+        verify(jwtService, never()).generateToken((UserDetails) any());
     }
 
     @Test
