@@ -6,7 +6,7 @@ CREATE TABLE user(
     password VARCHAR(250)  NOT NULL,
     full_name VARCHAR(100)  NOT NULL,
     role VARCHAR(15)  NOT NULL,
-    activity BOOLEAN NOT NULL DEFAULT TRUE,
+    active BOOLEAN NOT NULL DEFAULT TRUE,
     created_by varchar(50) NOT NULL,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_by varchar(50) NOT NULL,
@@ -16,7 +16,7 @@ CREATE TABLE user(
 INSERT INTO user VALUES (
             1,
             "yousef",
-            "yousef@123.com",
+            "yousef123@gmail.com",
             "$2a$12$bF2oN8yOshPz5FYyfgv1uOhVgZGFZ90vguBh9Jsxl/UzCOmZk8ATG",
             "Yousef Abdelrahman",
             "ADMIN",

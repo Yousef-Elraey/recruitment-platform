@@ -37,7 +37,7 @@ public class JobController {
  @GetMapping
  @PreAuthorize("hasAnyRole('ADMIN','HR','INTERVIEWER','CANDIDATE')")
  @Operation(summary = "get all job records")
- public ResponseEntity<PageResponse<GetJobResponse>> getAllJobs(HttpServletRequest request,
+ public ResponseEntity<PageResponse<GetJobResponse>> getAllJobs(
                                                                 @ParameterObject
                                                                 JobSearchRequest searchRequest,
 
@@ -54,7 +54,7 @@ public class JobController {
                                                                  String direction
 
  ) {
-  return new ResponseEntity<>(jobService.getAllJobs(request, searchRequest,page, size, sortBy, direction), HttpStatus.OK);
+  return new ResponseEntity<>(jobService.getAllJobs(searchRequest,page, size, sortBy, direction), HttpStatus.OK);
  }
 
  @GetMapping("/{id}")

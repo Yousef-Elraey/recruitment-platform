@@ -35,18 +35,7 @@ public class JobService {
     private final JobRepository jobRepository;
     private final JobMapper jobMapper;
     private final JwtService jwtService;
-    public PageResponse<GetJobResponse> getAllJobs(HttpServletRequest request, JobSearchRequest searchRequest, int page, int size, String sortBy, String direction) {
-      String authHeader = request.getHeader("Authorization");
-      String token = authHeader.substring(7);
-      String role = jwtService.extractRole(token);
-      String email = jwtService.extractUsername(token);
-      Long userId = jwtService.extractUserId(token);
-
-
-        System.out.println("User ID       : " + userId);
-        System.out.println("Email         : " + email);
-        System.out.println("Role          : " + role);
-        System.out.println("Authority     : " + "ROLE_" + role);
+    public PageResponse<GetJobResponse> getAllJobs(JobSearchRequest searchRequest, int page, int size, String sortBy, String direction) {
 
         if (searchRequest.getSalaryMin()> searchRequest.getSalaryMax()){
             throw new RecruitmentBusinessException(HttpStatus.BAD_REQUEST

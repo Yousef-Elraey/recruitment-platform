@@ -7,6 +7,7 @@ import com.job_service.entity.Job;
 import com.job_service.entity.Status;
 import com.job_service.entity.WorkMode;
 import com.job_service.job.dto.request.CreateJobRequest;
+import com.job_service.job.dto.request.JobSearchRequest;
 import com.job_service.job.dto.request.UpdateJobRequest;
 import com.job_service.job.dto.response.CreateJobResponse;
 import com.job_service.job.dto.response.GetJobResponse;
@@ -47,7 +48,7 @@ class JobServiceTest {
     private JobService jobService;
 
     private Job job;
-
+private JobSearchRequest jobSearchRequest;
     @BeforeEach
     void setUp() {
         job = new Job();
@@ -66,8 +67,7 @@ class JobServiceTest {
         when(jobMapper.toGetJobResponses(jobList)).thenReturn(mappedResponses);
 
         PageResponse<GetJobResponse> result = jobService.getAllJobs(
-                0, 10, "title", "asc",
-                null, null, null, null, null, null, null, null, null, null
+                jobSearchRequest,  0, 10, "title", "asc"
         );
 
         assertNotNull(result);
@@ -90,8 +90,8 @@ class JobServiceTest {
         RecruitmentBusinessException exception = assertThrows(
                 RecruitmentBusinessException.class,
                 () -> jobService.getAllJobs(
-                        0, 10, "title", "asc",
-                        null, null, null, null, null, null, null, null, null, null
+                        jobSearchRequest,  0, 10, "title", "asc"
+
                 )
         );
 
@@ -108,8 +108,8 @@ class JobServiceTest {
         when(jobMapper.toGetJobResponses(any())).thenReturn(List.of(new GetJobResponse()));
 
         jobService.getAllJobs(
-                2, 5, "salaryMin", "asc",
-                null, null, null, null, null, null, null, null, null, null
+                jobSearchRequest,  0, 10, "title", "asc"
+
         );
 
         ArgumentCaptor<Pageable> pageableCaptor = ArgumentCaptor.forClass(Pageable.class);
@@ -131,8 +131,8 @@ class JobServiceTest {
         when(jobMapper.toGetJobResponses(any())).thenReturn(List.of(new GetJobResponse()));
 
         jobService.getAllJobs(
-                0, 10, "createdAt", "DESC",
-                null, null, null, null, null, null, null, null, null, null
+                jobSearchRequest,  0, 10, "title", "asc"
+
         );
 
         ArgumentCaptor<Pageable> pageableCaptor = ArgumentCaptor.forClass(Pageable.class);
@@ -151,10 +151,8 @@ class JobServiceTest {
         when(jobMapper.toGetJobResponses(any())).thenReturn(List.of(new GetJobResponse()));
 
         jobService.getAllJobs(
-                0, 10, "title", "asc",
-                "Backend", "Great role", "AcmeCorp",
-                "Remote", EmploymentType.FULL_TIME, WorkMode.REMOTE,
-                3, 1000L, 5000L, Status.OPEN
+                jobSearchRequest,  0, 10, "title", "asc"
+
         );
 
         ArgumentCaptor<Specification> specCaptor = ArgumentCaptor.forClass(Specification.class);
@@ -172,8 +170,8 @@ class JobServiceTest {
         when(jobMapper.toGetJobResponses(any())).thenReturn(List.of(new GetJobResponse()));
 
         assertDoesNotThrow(() -> jobService.getAllJobs(
-                0, 10, "title", "asc",
-                null, null, null, null, null, null, null, null, null, null
+                jobSearchRequest,  0, 10, "title", "asc"
+
         ));
     }
 
