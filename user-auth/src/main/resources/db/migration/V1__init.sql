@@ -16,7 +16,7 @@ CREATE TABLE user(
 INSERT INTO user VALUES (
             1,
             "yousef",
-            "yousef@123.com",
+            "yousef123@gmail.com",
             "$2a$12$bF2oN8yOshPz5FYyfgv1uOhVgZGFZ90vguBh9Jsxl/UzCOmZk8ATG",
             "Yousef Abdelrahman",
             "ADMIN",

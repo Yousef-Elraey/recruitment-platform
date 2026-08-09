@@ -22,6 +22,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -42,19 +43,18 @@ public class AuthService {
     }
 
     public LoginResponse login(LoginRequest loginRequest) {
-       if (userRepository.findByEmail(loginRequest.getEmail()).isEmpty()){
+      Optional <User> user = userRepository.findByEmail(loginRequest.getEmail());
+        if (user.isEmpty()){
            throw  new RecruitmentBusinessException(
                    HttpStatus.FORBIDDEN,"NOT_ALLOWED","email you enter ("+loginRequest.getEmail()+") not found)");
        }
 
         Authentication authentication = authenticationManager
                 .authenticate(new UsernamePasswordAuthenticationToken(loginRequest.getEmail(), loginRequest.getPassword()));
-        if (authentication.isAuthenticated()) {
-            UserDetails userDetails =
-                    (UserDetails) authentication.getPrincipal();
-            String token = jwtService.generateToken(userDetails);
+
+       if (authentication.isAuthenticated()) {
+            String token = jwtService.generateToken(user.get());
             Date expireAt = jwtService.extractExpiration(token);
-            String userName = jwtService.extractUsername(token);
 
             LoginResponse response = new LoginResponse();
             response.setToken(token)
