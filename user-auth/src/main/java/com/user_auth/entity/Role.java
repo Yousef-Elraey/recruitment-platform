@@ -1,8 +1,5 @@
 package com.user_auth.entity;
 
 public enum Role {
-    HR,
-    INTERVIEWER,
-    ADMIN,
-    CANDIDATE
+    HR, INTERVIEWER, ADMIN, CANDIDATE
 }

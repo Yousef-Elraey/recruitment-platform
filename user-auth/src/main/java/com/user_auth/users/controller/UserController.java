@@ -2,6 +2,7 @@ package com.user_auth.users.controller;
 
 import com.user_auth.users.dto.request.UpdateRoleRequest;
 import com.user_auth.users.dto.request.UpdateUserRequest;
+import com.user_auth.users.dto.request.UserSearchRequest;
 import com.user_auth.users.dto.response.GetUserResponse;
 import com.user_auth.users.dto.response.PageResponse;
 import com.user_auth.users.dto.response.UpdateUserResponse;
@@ -12,6 +13,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springdoc.core.annotations.ParameterObject;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -28,12 +30,14 @@ public class UserController {
     @GetMapping
     @PreAuthorize("hasRole('ADMIN')")
     @Operation(summary = "Return all users")
-    public ResponseEntity<PageResponse<GetUserResponse>> getAllUsers(HttpServletRequest request,
+    public ResponseEntity<PageResponse<GetUserResponse>> getAllUsers(
+                                                                     @ParameterObject
+                                                                     UserSearchRequest userSearchRequest,
                                                                      @RequestParam(defaultValue = "0") int page,
                                                                      @RequestParam(defaultValue = "10") int size,
                                                                      @RequestParam(defaultValue = "id") String sortBy,
                                                                      @RequestParam(defaultValue = "asc") String direction) {
-        return new ResponseEntity<>(userService.getAllUsers(page, size, sortBy, direction), HttpStatus.OK);
+        return new ResponseEntity<>(userService.getAllUsers(userSearchRequest, page, size, sortBy, direction), HttpStatus.OK);
     }
 
     @GetMapping("/{id}")
@@ -66,5 +70,4 @@ public class UserController {
         userService.deleteUser(id);
         return new ResponseEntity<>("User de-Activated",HttpStatus.NO_CONTENT);
     }
-
 }

@@ -17,6 +17,7 @@ import com.user_auth.entity.Role;
 import com.user_auth.entity.User;
 import com.user_auth.users.dto.request.UpdateRoleRequest;
 import com.user_auth.users.dto.request.UpdateUserRequest;
+import com.user_auth.users.dto.request.UserSearchRequest;
 import com.user_auth.users.dto.response.GetUserResponse;
 import com.user_auth.users.dto.response.PageResponse;
 import com.user_auth.users.dto.response.UpdateUserResponse;
@@ -61,6 +62,7 @@ class UserServiceTest {
    private User user;
    private GetUserResponse getUserResponse;
    private UpdateUserResponse updateUserResponse;
+   private UserSearchRequest userSearchRequest;
 
    @BeforeEach
    void setUp() {
@@ -84,7 +86,7 @@ class UserServiceTest {
          when(userRepository.findAll(any(Pageable.class))).thenReturn(userPage);
          when(userMapper.toGetUserResponses(users)).thenReturn(List.of(getUserResponse));
 
-         PageResponse<GetUserResponse> result = userService.getAllUsers(0, 10, "id", "asc");
+         PageResponse<GetUserResponse> result = userService.getAllUsers(userSearchRequest, 0, 10, "id", "asc");
 
          assertThat(result).isNotNull();
          assertEquals(1, result.getData().size());
@@ -105,7 +107,7 @@ class UserServiceTest {
          when(userRepository.findAll(any(Pageable.class))).thenReturn(emptyPage);
 
          RecruitmentBusinessException ex = assertThrows(RecruitmentBusinessException.class,
-                 () -> userService.getAllUsers(0, 10, "id", "asc"));
+                 () -> userService.getAllUsers(userSearchRequest, 0, 10, "id", "asc"));
 
          assertEquals(HttpStatus.NOT_FOUND, ex.getStatus());
          verify(userMapper, never()).toGetUserResponses(any());
@@ -118,7 +120,7 @@ class UserServiceTest {
          when(userRepository.findAll(any(Pageable.class))).thenReturn(userPage);
          when(userMapper.toGetUserResponses(any())).thenReturn(List.of(getUserResponse));
 
-         userService.getAllUsers(0, 10, "id", "desc");
+         userService.getAllUsers(userSearchRequest, 0, 10, "id", "desc");
 
          verify(userRepository).findAll(argThatPageableIsDescending());
       }
@@ -175,7 +177,7 @@ class UserServiceTest {
          assertEquals("encodedPassword", user.getPassword());
          assertEquals("New Name", user.getFullName());
          assertEquals(Role.ADMIN, user.getRole());
-         assertThat(user.isActivity()).isTrue();
+         assertThat(user.getActive()).isTrue();
 
          verify(encoder).encode("plainPassword");
          verify(userRepository).save(user);
@@ -276,12 +278,12 @@ class UserServiceTest {
       @Test
       @DisplayName("sets activity to false and saves user when found")
       void deactivatesUser_whenExists() {
-         user.setActivity(true);
+         user.setActive(true);
          when(userRepository.findById(1L)).thenReturn(Optional.of(user));
 
          userService.deleteUser(1L);
 
-         assertThat(user.isActivity()).isFalse();
+         assertThat(user.getActive()).isFalse();
          verify(userRepository).save(user);
       }
 

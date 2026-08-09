@@ -18,7 +18,7 @@ public class GetUserResponse {
     private String email;
     private String fullName;
     private Role role;
-    private boolean activity;
+    private Boolean active;
     private LocalDateTime createdAt;
 
 }

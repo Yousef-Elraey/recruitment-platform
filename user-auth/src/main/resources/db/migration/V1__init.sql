@@ -6,7 +6,7 @@ CREATE TABLE user(
     password VARCHAR(250)  NOT NULL,
     full_name VARCHAR(100)  NOT NULL,
     role VARCHAR(15)  NOT NULL,
-    activity BOOLEAN NOT NULL DEFAULT TRUE,
+    active BOOLEAN NOT NULL DEFAULT TRUE,
     created_by varchar(50) NOT NULL,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_by varchar(50) NOT NULL,
