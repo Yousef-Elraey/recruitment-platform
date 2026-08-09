@@ -16,6 +16,10 @@ public enum ErrorCode {
 
     VALIDATION_ERROR,
 
+    SALARY_NOT_VALID,
+
     ACCESS_DENIED;
+
+
 
 }

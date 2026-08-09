@@ -1,16 +1,24 @@
 package com.job_service.job.controller;
 
+import com.job_service.entity.EmploymentType;
+import com.job_service.entity.Status;
+import com.job_service.entity.WorkMode;
 import com.job_service.job.dto.request.CreateJobRequest;
+import com.job_service.job.dto.request.JobSearchRequest;
 import com.job_service.job.dto.request.UpdateJobRequest;
 import com.job_service.job.dto.response.CreateJobResponse;
 import com.job_service.job.dto.response.GetJobResponse;
+import com.job_service.job.dto.response.PageResponse;
 import com.job_service.job.dto.response.UpdateJobResponse;
 import com.job_service.job.service.JobService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.hibernate.query.Page;
+import org.springdoc.core.annotations.ParameterObject;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -29,8 +37,24 @@ public class JobController {
  @GetMapping
  @PreAuthorize("hasAnyRole('ADMIN','HR','INTERVIEWER','CANDIDATE')")
  @Operation(summary = "get all job records")
- public ResponseEntity<List<GetJobResponse>> getAllJobs() {
-  return new ResponseEntity<>(jobService.getAllJobs(), HttpStatus.OK);
+ public ResponseEntity<PageResponse<GetJobResponse>> getAllJobs(HttpServletRequest request,
+                                                                @ParameterObject
+                                                                JobSearchRequest searchRequest,
+
+                                                                @RequestParam(defaultValue = "0")
+                                                                 int page,
+
+                                                                @RequestParam(defaultValue = "10")
+                                                                 int size,
+
+                                                                @RequestParam(defaultValue = "createdAt")
+                                                                 String sortBy,
+
+                                                                @RequestParam(defaultValue = "desc")
+                                                                 String direction
+
+ ) {
+  return new ResponseEntity<>(jobService.getAllJobs(request, searchRequest,page, size, sortBy, direction), HttpStatus.OK);
  }
 
  @GetMapping("/{id}")

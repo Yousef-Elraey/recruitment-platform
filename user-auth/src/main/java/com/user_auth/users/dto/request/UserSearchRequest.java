@@ -1,19 +1,21 @@
-package com.user_auth.users.dto.response;
+package com.user_auth.users.dto.request;
 
 import com.user_auth.entity.Role;
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import lombok.experimental.Accessors;
 
-import java.time.LocalDateTime;
 @Data
+@AllArgsConstructor
+@NoArgsConstructor
 @Accessors(chain = true)
-public class UpdateUserResponse {
+public class UserSearchRequest {
     private Long id;
     private String userName;
     private String email;
     private String fullName;
     private Role role;
+    private String password;
     private Boolean active;
-    private LocalDateTime updatedAt;
-
 }

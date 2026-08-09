@@ -36,7 +36,7 @@ public class AuthService {
     public RegisterResponse register(RegisterRequest request) {
         User user = authMapper.toUser(request);
         user.setPassword(encoder.encode(request.getPassword()));
-        user.setActivity(true);
+        user.setActive(true);
         userRepository.save(user);
         return authMapper.toRegisterResponse(user);
     }

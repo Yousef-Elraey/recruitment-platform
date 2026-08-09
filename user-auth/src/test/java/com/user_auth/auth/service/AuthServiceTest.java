@@ -91,7 +91,7 @@ class AuthServiceTest {
         RegisterResponse result = authService.register(request);
 
         assertThat(result).isEqualTo(expectedResponse);
-        assertThat(user.isActivity()).isTrue();
+        assertThat(user.getActive()).isTrue();
         assertEquals("encodedPassword", user.getPassword());
 
         verify(encoder).encode("plainPassword");
