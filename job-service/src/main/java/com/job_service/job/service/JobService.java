@@ -37,10 +37,6 @@ public class JobService {
     private final JwtService jwtService;
     public PageResponse<GetJobResponse> getAllJobs(JobSearchRequest searchRequest, int page, int size, String sortBy, String direction) {
 
-        if (searchRequest.getSalaryMin()> searchRequest.getSalaryMax()){
-            throw new RecruitmentBusinessException(HttpStatus.BAD_REQUEST
-                    ,ErrorCode.SALARY_NOT_VALID.name(),"the minimum salary is greater than maximum");
-        }
         Sort sort = direction.equalsIgnoreCase("desc")
                 ? Sort.by(sortBy).descending()
                 : Sort.by(sortBy).ascending();

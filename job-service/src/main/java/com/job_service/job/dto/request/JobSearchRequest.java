@@ -20,15 +20,8 @@ public class JobSearchRequest {
     private String location;
     private EmploymentType employmentType;
     private WorkMode workMode;
-
-    @PositiveOrZero(message = "Experience level must be greater than or equal to 0")
     private Integer experienceLevel;
-
-    @PositiveOrZero(message = "Minimum salary must be greater than or equal to 0")
     private Long salaryMin;
-
-    @PositiveOrZero(message = "Maximum salary must be greater than or equal to 0")
     private Long salaryMax;
-
     private Status status;
 }
