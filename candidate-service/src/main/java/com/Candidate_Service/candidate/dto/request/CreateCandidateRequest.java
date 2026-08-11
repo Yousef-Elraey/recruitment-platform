@@ -1,0 +1,35 @@
+package com.Candidate_Service.candidate.dto.request;
+
+import com.Candidate_Service.entity.*;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Pattern;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+import lombok.experimental.Accessors;
+
+import java.util.List;
+
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
+@Accessors(chain = true)
+public class CreateCandidateRequest {
+    @NotNull(message = "user_id is required")
+    private Long userId;
+
+    @NotBlank(message = "phone is required")
+    @Pattern(regexp = "^(\\+20|0)1[0-9]{9}$", message = "Invalid Egyptian phone number")
+    private String phone;
+
+    @NotBlank(message = "address is required")
+    private String address;
+
+    @NotBlank(message = "summary is required")
+    private String summary;
+
+    @NotNull(message = "status is required")
+    private Status status;
+
+}
