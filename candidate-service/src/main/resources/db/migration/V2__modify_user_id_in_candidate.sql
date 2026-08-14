@@ -1,0 +1,1 @@
+ALTER TABLE candidate DROP INDEX user_id;

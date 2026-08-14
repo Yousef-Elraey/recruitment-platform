@@ -11,7 +11,7 @@ updated_by varchar(250) NOT NULL,
 updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
  );
 
-CREATE TABLE candidate_experience(
+CREATE TABLE experience(
 id BIGINT PRIMARY KEY AUTO_INCREMENT,
 candidate_id BIGINT NOT NULL,
 company_name varchar(50) NOT NULL,
@@ -31,8 +31,12 @@ updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
 
 CREATE TABLE skill(
 id BIGINT PRIMARY KEY AUTO_INCREMENT,
-skill_name varchar(50) NOT NULL
- );
+skill_name varchar(100) UNIQUE NOT NULL,
+created_by varchar(250) NOT NULL,
+created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+updated_by varchar(250) NOT NULL,
+updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+);
 
 CREATE TABLE candidate_skill(
 id BIGINT PRIMARY KEY AUTO_INCREMENT,
@@ -46,21 +50,25 @@ updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
 
  CONSTRAINT FK_candidate_candidate_skill
     FOREIGN KEY(candidate_id) REFERENCES candidate(id),
-   CONSTRAINT FK_skill_candidate_skill
-       FOREIGN KEY(skill_id) REFERENCES skill(id)
-
+ CONSTRAINT FK_skill_candidate_skill
+    FOREIGN KEY(skill_id) REFERENCES skill(id)
 );
 
-CREATE TABLE candidate_education(
+CREATE TABLE education(
 id BIGINT PRIMARY KEY AUTO_INCREMENT,
 candidate_id BIGINT NOT NULL,
 institution varchar(100) NOT NULL,
 degree varchar(100) NOT NULL,
-fieldOfStudy varchar(100) NOT NULL,
-startDate Date NOT NULL,
-endDate Date ,
+field_of_study varchar(100) NOT NULL,
+start_date Date NOT NULL,
+end_date Date,
 current Boolean NOT NULL DEFAULT TRUE,
 description varchar(2000),
+created_by varchar(250) NOT NULL,
+created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+updated_by varchar(250) NOT NULL,
+updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+
 
  CONSTRAINT FK_candidate_candidate_education
     FOREIGN KEY(candidate_id) REFERENCES candidate(id)

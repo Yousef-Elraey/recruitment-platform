@@ -3,14 +3,17 @@ package com.Candidate_Service.entity;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.Accessors;
+import org.hibernate.annotations.Fetch;
 
 import java.util.List;
 
 @Entity
-@Data
+@Setter
+@Getter
 @NoArgsConstructor
 @AllArgsConstructor
 @Accessors(chain = true)
+
 public class Candidate extends BaseEntity{
 
     @Column(nullable = false, unique = true)
@@ -23,13 +26,15 @@ public class Candidate extends BaseEntity{
     @Column(length = 2000)
     private String summary;
 
-    @OneToMany(mappedBy = "candidate",cascade = CascadeType.ALL)
-    private List<CandidateExperience> experiences;
+    @OneToMany(mappedBy = "candidate", cascade = CascadeType.ALL)
+    private List<Experience> experiences;
 
-    @OneToMany(mappedBy = "candidate",cascade = CascadeType.ALL)
-    private List<CandidateSkill> skills;
-    @OneToMany(mappedBy = "candidate",cascade = CascadeType.ALL)
-    private List<CandidateEducation> educations;
+    @OneToMany(mappedBy = "candidate", cascade = CascadeType.ALL)
+    private List<CandidateSkill> candidateSkills;
+
+    @OneToMany(mappedBy = "candidate", cascade = CascadeType.ALL)
+    private List<Education> educations;
+
     @Enumerated(EnumType.STRING)
     private Status status;
 }

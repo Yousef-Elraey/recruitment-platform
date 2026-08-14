@@ -1,17 +1,19 @@
 package com.Candidate_Service.candidate.dto.response;
 
-import com.Candidate_Service.entity.CandidateEducation;
-import com.Candidate_Service.entity.CandidateExperience;
+import com.Candidate_Service.candidate_skill.dto.response.GetCandidateSkillResponse;
+import com.Candidate_Service.education.dto.response.GetEducationResponse;
+import com.Candidate_Service.entity.Education;
+import com.Candidate_Service.entity.Experience;
 import com.Candidate_Service.entity.CandidateSkill;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import com.Candidate_Service.experience.dto.response.GetExperienceResponse;
+import lombok.*;
 import lombok.experimental.Accessors;
 
 import java.time.LocalDateTime;
 import java.util.List;
 
-@Data
+@Setter
+@Getter
 @AllArgsConstructor
 @NoArgsConstructor
 @Accessors(chain = true)
@@ -21,11 +23,13 @@ public class GetCandidateResponse {
     private String phone;
     private String address;
     private String summary;
-    private List<CandidateExperience> experiences;
-    private List<CandidateSkill> skills;
-    private List<CandidateEducation> educations;
+    private List<GetExperienceResponse> experiences;
+    private List<GetCandidateSkillResponse> candidateSkills;
+    private List<GetEducationResponse> educations;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
+    private String createdBy;
+    private String updatedBy;
 
 
 }

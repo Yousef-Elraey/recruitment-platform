@@ -1,9 +1,12 @@
 package com.Candidate_Service.candidate.dto.request;
 
 import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 import lombok.experimental.Accessors;
 
-@Data
+@Setter
+@Getter
 @Accessors(chain = true)
 public class CandidateSearchRequest {
     private Long userId;

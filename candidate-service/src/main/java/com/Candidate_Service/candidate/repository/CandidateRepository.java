@@ -10,4 +10,5 @@ import org.springframework.data.jpa.repository.Query;
 import java.util.List;
 
 public interface CandidateRepository extends JpaRepository<Candidate, Long>, JpaSpecificationExecutor<Candidate> {
+
 }

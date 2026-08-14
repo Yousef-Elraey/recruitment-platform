@@ -1,22 +1,19 @@
 package com.Candidate_Service.entity;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import jakarta.persistence.*;
+import lombok.*;
 import lombok.experimental.Accessors;
 
-@Data
+import java.time.LocalDateTime;
+
+@Entity
 @AllArgsConstructor
 @NoArgsConstructor
+@Setter
+@Getter
 @Accessors(chain = true)
-@Entity
-public class Skill {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+public class Skill extends BaseEntity {
+    @Column(nullable = false, unique = true, length = 100)
     private String skillName;
+
 }
