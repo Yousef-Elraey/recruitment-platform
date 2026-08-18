@@ -1,6 +1,6 @@
 package com.Candidate_Service.candidate.dto.request;
 
-import com.Candidate_Service.entity.Status;
+import com.Candidate_Service.entity.CandidateStatus;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
@@ -27,5 +27,5 @@ public class UpdateCandidateRequest {
     private String summary;
 
     @NotNull(message = "status is required")
-    private Status status;
+    private CandidateStatus status;
 }

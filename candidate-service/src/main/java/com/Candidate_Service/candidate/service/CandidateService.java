@@ -10,16 +10,12 @@ import com.Candidate_Service.candidate.dto.response.UpdateCandidateResponse;
 import com.Candidate_Service.candidate.mapper.CandidateMapper;
 import com.Candidate_Service.candidate.repository.CandidateRepository;
 import com.Candidate_Service.candidate.specification.CandidateSpecification;
-import com.Candidate_Service.candidate_skill.dto.response.GetCandidateSkillResponse;
-import com.Candidate_Service.candidate_skill.repository.CandidateSkillRepository;
 import com.Candidate_Service.candidate_skill.service.CandidateSkillService;
 import com.Candidate_Service.common.exceprion.ErrorCode;
 import com.Candidate_Service.common.exceprion.RecruitmentBusinessException;
-import com.Candidate_Service.education.repository.EducationRepository;
 import com.Candidate_Service.education.service.EducationService;
 import com.Candidate_Service.entity.Candidate;
-import com.Candidate_Service.entity.Status;
-import com.Candidate_Service.experience.repository.ExperienceRepository;
+import com.Candidate_Service.entity.CandidateStatus;
 import com.Candidate_Service.experience.service.ExperienceService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -109,9 +105,9 @@ public class CandidateService {
                     , "candidate with id (" + id + ") not found");
         }
         Candidate candidate = candidateOp.get();
-        if (candidate.getStatus()==Status.DELETED){
-            throw new RecruitmentBusinessException(HttpStatus.NOT_FOUND,ErrorCode.CANDIDATE_NOT_AVAILABLE.name(),
-                    "candidate with id ("+id+") not available");
+        if (candidate.getStatus() == CandidateStatus.DELETED) {
+            throw new RecruitmentBusinessException(HttpStatus.NOT_FOUND, ErrorCode.CANDIDATE_NOT_AVAILABLE.name(),
+                    "candidate with id (" + id + ") not available");
         }
         return candidateMapper.toGetCandidateResponse(candidate);
     }
@@ -148,7 +144,18 @@ public class CandidateService {
                     "candidate with id (" + id + ") not found");
         }
     Candidate candidate = candidateOp.get();
-        candidate.setStatus(Status.DELETED);
+        candidate.setStatus(CandidateStatus.DELETED);
+        candidateRepository.save(candidate);
+    }
+
+    public void approveCandidate(Long id) {
+        Optional<Candidate> candidateOp = candidateRepository.findById(id);
+        if (candidateOp.isEmpty()) {
+            throw new RecruitmentBusinessException(HttpStatus.NOT_FOUND, ErrorCode.CANDIDATE_NOT_FOUND.name(),
+                    "candidate with id (" + id + ") not found");
+        }
+        Candidate candidate = candidateOp.get();
+        candidate.setStatus(CandidateStatus.APPROVED);
         candidateRepository.save(candidate);
     }
 }

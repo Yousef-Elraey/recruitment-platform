@@ -12,6 +12,7 @@ import java.time.LocalDate;
 @NoArgsConstructor
 @Accessors(chain = true)
 @Entity
+@Table(name = "educations")
 public class Education extends BaseEntity {
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)

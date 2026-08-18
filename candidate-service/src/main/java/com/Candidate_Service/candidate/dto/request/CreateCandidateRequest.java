@@ -7,8 +7,6 @@ import jakarta.validation.constraints.Pattern;
 import lombok.*;
 import lombok.experimental.Accessors;
 
-import java.util.List;
-
 @Setter
 @Getter
 @AllArgsConstructor
@@ -29,6 +27,6 @@ public class CreateCandidateRequest {
     private String summary;
 
     @NotNull(message = "status is required")
-    private Status status;
+    private CandidateStatus status;
 
 }

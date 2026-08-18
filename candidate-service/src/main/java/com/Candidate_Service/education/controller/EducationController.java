@@ -7,6 +7,7 @@ import com.Candidate_Service.education.dto.response.GetEducationResponse;
 import com.Candidate_Service.education.dto.response.UpdateEducationResponse;
 import com.Candidate_Service.education.service.EducationService;
 import com.Candidate_Service.entity.Education;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -17,6 +18,8 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/v1/educations")
 @RequiredArgsConstructor
+@SecurityRequirement(name = "Bearer Authentication")
+
 public class EducationController {
     private final EducationService educationService;
 

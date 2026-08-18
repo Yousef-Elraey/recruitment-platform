@@ -3,7 +3,6 @@ package com.Candidate_Service.entity;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.Accessors;
-import org.hibernate.annotations.Fetch;
 
 import java.util.List;
 
@@ -13,6 +12,7 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @Accessors(chain = true)
+@Table(name = "candidates")
 
 public class Candidate extends BaseEntity{
 
@@ -36,5 +36,5 @@ public class Candidate extends BaseEntity{
     private List<Education> educations;
 
     @Enumerated(EnumType.STRING)
-    private Status status;
+    private CandidateStatus Status;
 }

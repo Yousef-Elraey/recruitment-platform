@@ -3,8 +3,15 @@ package com.Candidate_Service.common.exceprion;
 public enum ErrorCode {
 
     USER_NOT_FOUND,
-
+    EMPTY_CV,
+    CV_TOO_LARGE,
+    IS_EMPTY,
+    INVALID_CV_TYPE,
+    CV_UPLOADED_FAILED,
+    CV_NOT_FOUND,
+    CV_DATA_INVALID,
     JOB_NOT_FOUND,
+    CV_PARSING_DATA_NOT_FOUND,
     CANDIDATE_SKILL_NOT_FOUND,
     APPLICATION_NOT_FOUND,
     ALREADY_EXISTS,

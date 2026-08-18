@@ -12,6 +12,7 @@ import com.Candidate_Service.experience.dto.response.CreateExperienceResponse;
 import com.Candidate_Service.experience.dto.response.GetExperienceResponse;
 import com.Candidate_Service.experience.dto.response.UpdateExperienceResponse;
 import com.Candidate_Service.experience.service.ExperienceService;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -22,6 +23,8 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/v1/experiences")
 @RequiredArgsConstructor
+@SecurityRequirement(name = "Bearer Authentication")
+
 public class ExperienceController {
     private final ExperienceService experienceService;
 

@@ -9,6 +9,7 @@ import com.Candidate_Service.skill.dto.response.CreateSkillResponse;
 import com.Candidate_Service.skill.dto.response.GetSkillResoponse;
 import com.Candidate_Service.skill.dto.response.UpdateSkillResponse;
 import com.Candidate_Service.skill.service.SkillService;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import lombok.RequiredArgsConstructor;
 import org.springdoc.core.annotations.ParameterObject;
 import org.springframework.http.HttpStatus;
@@ -18,6 +19,8 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping("/api/v1/skills")
 @RequiredArgsConstructor
+@SecurityRequirement(name = "Bearer Authentication")
+
 public class SkillController {
     private final SkillService skillService;
 

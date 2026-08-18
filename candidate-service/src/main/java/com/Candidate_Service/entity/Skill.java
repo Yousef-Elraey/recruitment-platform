@@ -12,8 +12,8 @@ import java.time.LocalDateTime;
 @Setter
 @Getter
 @Accessors(chain = true)
+@Table(name = "skills")
 public class Skill extends BaseEntity {
     @Column(nullable = false, unique = true, length = 100)
     private String skillName;
-
 }

@@ -30,6 +30,4 @@ public class GetCandidateResponse {
     private LocalDateTime updatedAt;
     private String createdBy;
     private String updatedBy;
-
-
 }
