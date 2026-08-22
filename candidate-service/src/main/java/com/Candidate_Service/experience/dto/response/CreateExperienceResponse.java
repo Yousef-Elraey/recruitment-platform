@@ -21,7 +21,6 @@ public class CreateExperienceResponse {
     private String jobTitle;
     private LocalDate startDate;
     private LocalDate endDate;
-    private Boolean current;
     private String description;
     private LocalDateTime createdAt;
     private String createdBy;

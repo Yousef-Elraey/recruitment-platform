@@ -25,13 +25,9 @@ public class CreateExperienceRequest {
     @NotBlank(message = "job title is required")
     private String jobTitle;
 
-    @NotNull(message = "start date is required")
     private LocalDate startDate;
 
     private LocalDate endDate;
-
-    @NotNull(message = "current is required")
-    private Boolean current;
 
     @NotBlank(message = "description is required")
     private String description;

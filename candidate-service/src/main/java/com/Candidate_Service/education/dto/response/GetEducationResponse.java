@@ -22,7 +22,6 @@ public class GetEducationResponse {
     private String fieldOfStudy;
     private LocalDate startDate;
     private LocalDate endDate;
-    private Boolean current;
     private String description;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;

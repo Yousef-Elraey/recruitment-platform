@@ -13,6 +13,9 @@ import lombok.experimental.Accessors;
 @NoArgsConstructor
 @Accessors(chain = true)
 public class UpdateCandidateRequest {
+    private Long id;
+
+    private String name;
     @NotNull(message = "user_id is required")
     private Long userId;
 

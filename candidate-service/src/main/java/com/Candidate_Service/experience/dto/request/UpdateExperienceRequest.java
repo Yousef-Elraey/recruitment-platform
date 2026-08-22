@@ -30,9 +30,6 @@ public class UpdateExperienceRequest {
 
     private LocalDate endDate;
 
-    @NotNull(message = "current is required")
-    private Boolean current;
-
     @NotBlank(message = "description is required")
     private String description;
 

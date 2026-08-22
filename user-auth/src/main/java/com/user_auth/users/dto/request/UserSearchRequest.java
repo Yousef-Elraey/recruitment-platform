@@ -12,6 +12,7 @@ import lombok.experimental.Accessors;
 @Accessors(chain = true)
 public class UserSearchRequest {
     private Long id;
+    private String phone;
     private String userName;
     private String email;
     private String fullName;

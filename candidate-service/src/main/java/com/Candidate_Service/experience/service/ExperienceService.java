@@ -40,7 +40,6 @@ public class ExperienceService {
                     .setJobTitle(experience.getJobTitle())
                     .setStartDate(experience.getStartDate())
                     .setEndDate(experience.getEndDate())
-                    .setCurrent(experience.getCurrent())
                     .setDescription(experience.getDescription())
                     .setCreatedAt(experience.getCreatedAt())
                     .setCreatedBy(experience.getCreatedBy())
@@ -66,7 +65,6 @@ public class ExperienceService {
                 .setJobTitle(experience.getJobTitle())
                 .setStartDate(experience.getStartDate())
                 .setEndDate(experience.getEndDate())
-                .setCurrent(experience.getCurrent())
                 .setDescription(experience.getDescription())
                 .setCreatedAt(experience.getCreatedAt())
                 .setCreatedBy(experience.getCreatedBy())
@@ -91,11 +89,8 @@ public class ExperienceService {
                 .setJobTitle(request.getJobTitle())
                 .setStartDate(request.getStartDate())
                 .setEndDate(request.getEndDate())
-                .setCurrent(request.getCurrent())
                 .setDescription(request.getDescription());
-        if (request.getCurrent()) {
-            experience.setEndDate(LocalDate.now());
-        }
+
         experienceRepository.save(experience);
 
         CreateExperienceResponse response = new CreateExperienceResponse();
@@ -105,7 +100,6 @@ public class ExperienceService {
                 .setJobTitle(experience.getJobTitle())
                 .setStartDate(experience.getStartDate())
                 .setEndDate(experience.getEndDate())
-                .setCurrent(experience.getCurrent())
                 .setDescription(experience.getDescription())
                 .setCreatedAt(experience.getCreatedAt())
                 .setCreatedBy(experience.getCreatedBy());
@@ -133,11 +127,8 @@ public class ExperienceService {
                 .setJobTitle(request.getJobTitle())
                 .setStartDate(request.getStartDate())
                 .setEndDate(request.getEndDate())
-                .setCurrent(request.getCurrent())
                 .setDescription(request.getDescription());
-        if (request.getCurrent()) {
-            experience.setEndDate(LocalDate.now());
-        }
+
         experienceRepository.save(experience);
 
         UpdateExperienceResponse response = new UpdateExperienceResponse();
@@ -147,7 +138,6 @@ public class ExperienceService {
                 .setJobTitle(experience.getJobTitle())
                 .setStartDate(experience.getStartDate())
                 .setEndDate(experience.getEndDate())
-                .setCurrent(experience.getCurrent())
                 .setDescription(experience.getDescription())
                 .setUpdatedAt(experience.getUpdatedAt())
                 .setUpdatedBy(experience.getUpdatedBy());
@@ -184,7 +174,6 @@ public class ExperienceService {
                     .setJobTitle(experience.getJobTitle())
                     .setStartDate(experience.getStartDate())
                     .setEndDate(experience.getEndDate())
-                    .setCurrent(experience.getCurrent())
                     .setDescription(experience.getDescription())
                     .setCreatedAt(experience.getCreatedAt())
                     .setCreatedBy(experience.getCreatedBy())

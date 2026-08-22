@@ -4,6 +4,15 @@ import com.Candidate_Service.entity.Candidate;
 import org.springframework.data.jpa.domain.Specification;
 
 public class CandidateSpecification {
+    public static Specification<Candidate> hasName(String name) {
+        return (root, query, cb) ->
+                name == null
+                        ? null
+                        : cb.like(
+                        cb.lower(root.get("name")),
+                        "%" + name.toLowerCase() + "%");
+    }
+
     public static Specification<Candidate> hasPhone(String phone) {
         return (root, query, cb) ->
                 phone == null

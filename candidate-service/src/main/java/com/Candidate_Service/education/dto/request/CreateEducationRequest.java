@@ -25,18 +25,12 @@ public class CreateEducationRequest {
     @NotNull(message = "degree is required")
     private String degree;
 
-    @NotNull(message = "field of study is required")
     private String fieldOfStudy;
 
-    @NotNull(message = "start date is required")
     private LocalDate startDate;
 
     private LocalDate endDate;
 
-    @NotNull(message = "current is required")
-    private Boolean current;
-
-    @NotNull(message = "description is required")
     private String description;
 
 

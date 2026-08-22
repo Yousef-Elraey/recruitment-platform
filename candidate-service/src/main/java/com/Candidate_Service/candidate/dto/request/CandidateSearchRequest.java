@@ -9,6 +9,7 @@ import lombok.experimental.Accessors;
 @Getter
 @Accessors(chain = true)
 public class CandidateSearchRequest {
+    private String name;
     private Long userId;
     private String phone;
     private String address;

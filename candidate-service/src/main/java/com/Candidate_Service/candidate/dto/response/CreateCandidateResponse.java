@@ -19,6 +19,7 @@ import java.util.List;
 @Accessors(chain = true)
 public class CreateCandidateResponse {
     private Long Id;
+    private String name;
     private Long userId;
     private String phone;
     private String address;

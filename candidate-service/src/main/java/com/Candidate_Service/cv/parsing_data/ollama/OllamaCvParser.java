@@ -24,132 +24,172 @@ public class OllamaCvParser implements CvAiParser {
     @Override
     public ParsedCvResponse parse(String cvText) {
 
-        String prompt = """
-                You are a CV parsing AI.
+        String prompt = "\n" +
+                "                You are a CV parsing AI.\n" +
+                "\n" +
+                "                Extract ONLY information that actually exists in the CV.\n" +
+                "                DO NOT invent information.\n" +
+                "                If information is missing, use null or an empty array.\n" +
 
-                Extract ONLY information that actually exists in the CV.
-                DO NOT invent information.
-                If information is missing, use null or an empty array.
+                "  IMPORTANT RULES FOR DATES:\n" +
+                "\n" +
+                "- All fields named \"startDate\" and \"endDate\" MUST be returned as JSON strings using the exact format \"YYYY-MM-DD\".\n" +
+                "- These dates are intended to be deserialized into Java LocalDate.\n" +
+                "- NEVER return dates in another format.\n" +
+                "- NEVER return a date containing a time.\n" +
+                "- NEVER return a date containing a timezone.\n" +
+                "- NEVER return values such as \"June 2024\", \"06/2024\", \"2024\", \"Present\", or \"Current\" for startDate or endDate.\n" +
+                "- If the CV provides an exact day, convert it to \"YYYY-MM-DD\".\n" +
+                "- If the CV does NOT provide enough information to determine an exact day, return null.\n" +
+                "- If an experience or education is still ongoing and the CV says \"Present\", \"Current\", or equivalent, set endDate to null.\n" +
+                "- Do NOT invent a day, month, or year.\n" +
+                "- If the date is missing, return null.\n" +
+                "\n" +
+                "CORRECT:\n" +
+                "\"startDate\": \"2023-09-15\",\n" +
+                "\"endDate\": \"2025-06-30\"\n" +
+                "\n" +
+                "CORRECT:\n" +
+                "\"startDate\": null,\n" +
+                "\"endDate\": null\n" +
+                "\n" +
+                "WRONG:\n" +
+                "\"startDate\": \"September 2023\"\n" +
+                "\n" +
+                "WRONG:\n" +
+                "\"startDate\": \"09/2023\"\n" +
+                "\n" +
+                "WRONG:\n" +
+                "\"startDate\": \"2023\"\n" +
+                "\n" +
+                "WRONG:\n" +
+                "\"endDate\": \"Present\"\n" +
+                "\n" +
+                "WRONG:\n" +
+                "\"endDate\": \"2025-06-30T00:00:00\"\n" +
+                "\n" +
+                "IMPORTANT:\n" +
+                "The JSON itself must contain date strings in \"YYYY-MM-DD\" format\n"+
 
-                Return ONLY valid JSON.
-                Do not use Markdown.
-                Do not wrap the JSON in ```json.
-                Do not add explanations before or after the JSON.
-
-                IMPORTANT:
-                The JSON structure MUST exactly match this schema:
-
-                {
-                  "personalInfo": {
-                    "name": "string or null",
-                    "phone": "string or null",
-                    "email": "string or null",
-                    "linkedIn": "string or null",
-                    "github": "string or null"
-                  },
-
-                  "summary": "string or null",
-
-                  "skills": [
-                    {
-                      "name": "string",
-                      "level": "string or null"
-                    }
-                  ],
-
-                  "experience": [
-                    {
-                      "companyName": "string",
-                      "jobTitle": "string",
-                      "startDate": "string or null",
-                      "endDate": "string or null",
-                      "description": "string or null"
-                    }
-                  ],
-
-                  "education": [
-                    {
-                      "institution": "string",
-                      "degree": "string or null",
-                      "fieldOfStudy": "string or null",
-                      "startDate": "string or null",
-                      "endDate": "string or null"
-                    }
-                  ],
-
-                  "certifications": [
-                    {
-                      "name": "string",
-                      "issuer": "string or null",
-                      "issueDate": "string or null"
-                    }
-                  ],
-
-                  "projects": [
-                    {
-                      "name": "string",
-                      "description": "string or null",
-                      "technologies": []
-                    }
-                  ],
-
-                  "languages": [
-                    {
-                      "language": "string",
-                      "proficiency": "string or null"
-                    }
-                  ]
-                }
-
-                IMPORTANT RULES FOR SKILLS:
-                - skills MUST always be an array of JSON objects.
-                - NEVER return skills as an array of strings.
-                - Each skill object MUST contain "name".
-                - "level" should be null if the CV does not specify a skill level.
-
-                IMPORTANT RULES FOR LANGUAGES:
-                - languages MUST always be an array of JSON objects.
-                - NEVER return languages as an array of strings.
-                - Each language object MUST contain "language".
-                - "proficiency" should be null if the CV does not specify proficiency.
-                        
-                        NEVER return skills as strings.
-                                
-                        WRONG:
-                        "skills": ["Java", "Spring Boot"]
-                                
-                        CORRECT:
-                        "skills": [
-                            {
-                                "name": "Java",
-                                "level": null
-                            },
-                            {
-                                "name": "Spring Boot",
-                                "level": null
-                            }
-                        ]
-                                
-                        NEVER return languages as strings.
-                                
-                        WRONG:
-                        "languages": ["Arabic", "English"]
-                                
-                        CORRECT:
-                        "languages": [
-                            {
-                                "language": "Arabic",
-                                "proficiency": "Native"
-                            },
-                            {
-                                "language": "English",
-                                "proficiency": "Very Good"
-                            }
-                        ]
-
-                CV:
-                %s
-                """.formatted(cvText);
+                "\n" +
+                "                Return ONLY valid JSON.\n" +
+                "                Do not use Markdown.\n" +
+                "                Do not wrap the JSON in ```json.\n" +
+                "                Do not add explanations before or after the JSON.\n" +
+                "\n" +
+                "                IMPORTANT:\n" +
+                "                The JSON structure MUST exactly match this schema:\n" +
+                "\n" +
+                "                {\n" +
+                "                  \"personalInfo\": {\n" +
+                "                    \"name\": \"string or null\",\n" +
+                "                    \"phone\": \"string or null\",\n" +
+                "                    \"email\": \"string or null\",\n" +
+                "                    \"linkedIn\": \"string or null\",\n" +
+                "                    \"github\": \"string or null\"\n" +
+                "                  },\n" +
+                "\n" +
+                "                  \"summary\": \"string or null\",\n" +
+                "\n" +
+                "                  \"skills\": [\n" +
+                "                    {\n" +
+                "                      \"name\": \"string\",\n" +
+                "                      \"level\": \"string or null\"\n" +
+                "                    }\n" +
+                "                  ],\n" +
+                "\n" +
+                "                  \"experience\": [\n" +
+                "                    {\n" +
+                "                      \"companyName\": \"string\",\n" +
+                "                      \"jobTitle\": \"string\",\n" +
+                "                      \"startDate\": \"YYYY-MM-DD string or null\",\n"  +
+                "                       \"endDate\": \"YYYY-MM-DD string or null\",\n" +
+                "                      \"description\": \"string or null\"\n" +
+                "                    }\n" +
+                "                  ],\n" +
+                "\n" +
+                "                  \"education\": [\n" +
+                "                    {\n" +
+                "                      \"institution\": \"string\",\n" +
+                "                      \"degree\": \"string or null\",\n" +
+                "                      \"fieldOfStudy\": \"string or null\",\n" +
+                "                      \"startDate\": \"YYYY-MM-DD string or null\",\n" +
+                "                       \"endDate\": \"YYYY-MM-DD string or null\",\n" +
+                "                    }\n" +
+                "                  ],\n" +
+                "\n" +
+                "                  \"certifications\": [\n" +
+                "                    {\n" +
+                "                      \"name\": \"string\",\n" +
+                "                      \"issuer\": \"string or null\",\n" +
+                "                      \"issueDate\": \"string or null\"\n" +
+                "                    }\n" +
+                "                  ],\n" +
+                "\n" +
+                "                  \"projects\": [\n" +
+                "                    {\n" +
+                "                      \"name\": \"string\",\n" +
+                "                      \"description\": \"string or null\",\n" +
+                "                      \"technologies\": []\n" +
+                "                    }\n" +
+                "                  ],\n" +
+                "\n" +
+                "                  \"languages\": [\n" +
+                "                    {\n" +
+                "                      \"language\": \"string\",\n" +
+                "                      \"proficiency\": \"string or null\"\n" +
+                "                    }\n" +
+                "                  ]\n" +
+                "                }\n" +
+                "\n" +
+                "                IMPORTANT RULES FOR SKILLS:\n" +
+                "                - skills MUST always be an array of JSON objects.\n" +
+                "                - NEVER return skills as an array of strings.\n" +
+                "                - Each skill object MUST contain \"name\".\n" +
+                "                - \"level\" should be null if the CV does not specify a skill level.\n" +
+                "\n" +
+                "                IMPORTANT RULES FOR LANGUAGES:\n" +
+                "                - languages MUST always be an array of JSON objects.\n" +
+                "                - NEVER return languages as an array of strings.\n" +
+                "                - Each language object MUST contain \"language\".\n" +
+                "                - \"proficiency\" should be null if the CV does not specify proficiency.\n" +
+                "                        \n" +
+                "                        NEVER return skills as strings.\n" +
+                "                                \n" +
+                "                        WRONG:\n" +
+                "                        \"skills\": [\"Java\", \"Spring Boot\"]\n" +
+                "                                \n" +
+                "                        CORRECT:\n" +
+                "                        \"skills\": [\n" +
+                "                            {\n" +
+                "                                \"name\": \"Java\",\n" +
+                "                                \"level\": null\n" +
+                "                            },\n" +
+                "                            {\n" +
+                "                                \"name\": \"Spring Boot\",\n" +
+                "                                \"level\": null\n" +
+                "                            }\n" +
+                "                        ]\n" +
+                "                                \n" +
+                "                        NEVER return languages as strings.\n" +
+                "                                \n" +
+                "                        WRONG:\n" +
+                "                        \"languages\": [\"Arabic\", \"English\"]\n" +
+                "                                \n" +
+                "                        CORRECT:\n" +
+                "                        \"languages\": [\n" +
+                "                            {\n" +
+                "                                \"language\": \"Arabic\",\n" +
+                "                                \"proficiency\": \"Native\"\n" +
+                "                            },\n" +
+                "                            {\n" +
+                "                                \"language\": \"English\",\n" +
+                "                                \"proficiency\": \"Very Good\"\n" +
+                "                            }\n" +
+                "                        ]\n" +
+                "\n" +
+                "                CV:\n" +
+                "                %s ".formatted(cvText);
 
         OllamaChatRequest request =
                 OllamaChatRequest.builder()

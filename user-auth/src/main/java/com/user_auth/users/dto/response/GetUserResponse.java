@@ -14,6 +14,7 @@ import java.time.LocalDateTime;
 @Accessors(chain = true)
 public class GetUserResponse {
     private Long id;
+    private String phone;
     private String userName;
     private String email;
     private String fullName;

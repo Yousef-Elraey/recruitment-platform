@@ -5,8 +5,11 @@ import com.user_auth.auth.dto.response.LoginResponse;
 import com.user_auth.auth.mapper.AuthMapper;
 import com.user_auth.auth.dto.request.RegisterRequest;
 import com.user_auth.auth.dto.response.RegisterResponse;
+import com.user_auth.client.candidate.CandidateClient;
+import com.user_auth.client.dto.CandidateCreateRequestDto;
 import com.user_auth.common.exception.RecruitmentBusinessException;
 import com.user_auth.common.security.JwtService;
+import com.user_auth.entity.Role;
 import com.user_auth.entity.User;
 import com.user_auth.redis.service.TokenBlackListService;
 import com.user_auth.users.repository.UserRepository;
@@ -21,6 +24,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import javax.management.relation.RoleStatus;
 import java.util.Date;
 import java.util.Optional;
 
@@ -33,12 +37,25 @@ public class AuthService {
     private final AuthenticationManager authenticationManager;
     private final JwtService jwtService;
     private final TokenBlackListService tokenBlackListService;
+    private final CandidateClient candidateClient;
 
     public RegisterResponse register(RegisterRequest request) {
         User user = authMapper.toUser(request);
         user.setPassword(encoder.encode(request.getPassword()));
-        user.setActive(true);
-        userRepository.save(user);
+
+        User savedUser = userRepository.save(user);
+        CandidateCreateRequestDto candidateCreateRequestDto = new CandidateCreateRequestDto();
+        candidateCreateRequestDto.setId(savedUser.getId())
+                .setName(savedUser.getUserName())
+                .setPhone(savedUser.getPhone())
+                .setAddress(savedUser.getAddress())
+                .setSummary(savedUser.getSummary())
+                .setStatus(savedUser.getStatus());
+
+        if (savedUser.getRole() == Role.CANDIDATE) {
+            candidateClient.createCandidate(candidateCreateRequestDto);
+        }
+        //we want check is the user-role is ''candidate call the candidate-service and create a candidate record in the candidate table
         return authMapper.toRegisterResponse(user);
     }
 

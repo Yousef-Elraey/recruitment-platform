@@ -6,6 +6,7 @@ import com.user_auth.auth.service.AuthService;
 import com.user_auth.auth.dto.request.RegisterRequest;
 import com.user_auth.auth.dto.response.RegisterResponse;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
@@ -22,13 +23,14 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/api/v1/auth")
 @RequiredArgsConstructor
 @Tag(name = "Authentication", description = "Authentication APIs")
+@SecurityRequirement(name = "Bearer Authentication")
 public class AuthController {
 
     private final AuthService authService;
 
     @PostMapping("/register")
-    @PreAuthorize("hasRole('ADMIN')")
     @Operation(summary = "Register a new user")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<RegisterResponse> register(@Valid @RequestBody RegisterRequest request) {
         return new ResponseEntity<>(authService.register(request), HttpStatus.CREATED);
     }

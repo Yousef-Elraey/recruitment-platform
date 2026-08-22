@@ -21,6 +21,5 @@ public class CreateEducationResponse {
     private String fieldOfStudy;
     private LocalDate startDate;
     private LocalDate endDate;
-    private Boolean current;
     private String description;
 }

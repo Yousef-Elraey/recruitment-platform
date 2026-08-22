@@ -13,9 +13,9 @@ import lombok.experimental.Accessors;
 @NoArgsConstructor
 @Accessors(chain = true)
 public class CreateCandidateRequest {
-    @NotNull(message = "user_id is required")
-    private Long userId;
+    private Long id;
 
+    private String name;
     @NotBlank(message = "phone is required")
     @Pattern(regexp = "^(\\+20|0)1[0-9]{9}$", message = "Invalid Egyptian phone number")
     private String phone;

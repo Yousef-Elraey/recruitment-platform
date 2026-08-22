@@ -25,7 +25,6 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("api/v1/candidates")
 @RequiredArgsConstructor
 @SecurityRequirement(name = "Bearer Authentication")
-
 public class CandidateController {
 private final CandidateService candidateService;
     @PreAuthorize("hasAnyRole('ADMIN','HR')")
@@ -55,7 +54,7 @@ private final CandidateService candidateService;
         return new ResponseEntity<>(candidateService.getCandidateById(id),HttpStatus.OK);
     }
 
-    @PreAuthorize("hasRole('ADMIN','CANDIDATE')")
+    @PreAuthorize("hasAnyRole('ADMIN','CANDIDATE')")
     @Operation(summary = "create a candidate")
     @PostMapping
     public ResponseEntity<CreateCandidateResponse> createCandidate(@Valid @RequestBody CreateCandidateRequest candidateRequest){
@@ -75,15 +74,21 @@ private final CandidateService candidateService;
     @PatchMapping("/{id}")
     public ResponseEntity<String> deleteCandidate(@PathVariable Long id){
         candidateService.deleteCandidate(id);
-        return new ResponseEntity("candidate deleted",HttpStatus.CREATED);
+        return new ResponseEntity("candidate deleted", HttpStatus.CREATED);
     }
 
     @PreAuthorize("hasAnyRole('ADMIN','HR')")
     @Operation(summary = "approve a candidate")
     @PatchMapping("/approve/{id}")
-    public ResponseEntity<String> approveCandidate(@PathVariable Long id){
+    public ResponseEntity<String> approveCandidate(@PathVariable Long id) {
         candidateService.approveCandidate(id);
-        return new ResponseEntity("candidate with id ("+id+") approved",HttpStatus.CREATED);
+        return new ResponseEntity("candidate with id (" + id + ") approved", HttpStatus.CREATED);
+    }
+
+    @PostMapping("/fill-my-data")
+    public ResponseEntity<String> fillCurrentCandidateData() {
+        candidateService.fillCurrentCandidateData();
+        return new ResponseEntity<>("your data is submitted", HttpStatus.CREATED);
     }
 
 }

@@ -10,13 +10,29 @@ import com.Candidate_Service.candidate.dto.response.UpdateCandidateResponse;
 import com.Candidate_Service.candidate.mapper.CandidateMapper;
 import com.Candidate_Service.candidate.repository.CandidateRepository;
 import com.Candidate_Service.candidate.specification.CandidateSpecification;
+import com.Candidate_Service.candidate_skill.dto.request.CreateCandidateSkillRequest;
+import com.Candidate_Service.candidate_skill.repository.CandidateSkillRepository;
 import com.Candidate_Service.candidate_skill.service.CandidateSkillService;
 import com.Candidate_Service.common.exceprion.ErrorCode;
 import com.Candidate_Service.common.exceprion.RecruitmentBusinessException;
+import com.Candidate_Service.common.security.AuthenticatedUser;
+import com.Candidate_Service.common.security.CurrentUser;
+import com.Candidate_Service.cv.parsing_data.dto.ParsedEducation;
+import com.Candidate_Service.cv.parsing_data.dto.ParsedExperience;
+import com.Candidate_Service.cv.parsing_data.dto.ParsedSkill;
+import com.Candidate_Service.cv.parsing_data.parsing.ParsedCvResponse;
+import com.Candidate_Service.cv.service.CvService;
+import com.Candidate_Service.education.dto.request.CreateEducationRequest;
+import com.Candidate_Service.education.repository.EducationRepository;
 import com.Candidate_Service.education.service.EducationService;
 import com.Candidate_Service.entity.Candidate;
+import com.Candidate_Service.entity.CandidateSkill;
 import com.Candidate_Service.entity.CandidateStatus;
+import com.Candidate_Service.entity.Skill;
+import com.Candidate_Service.experience.dto.request.CreateExperienceRequest;
+import com.Candidate_Service.experience.repository.ExperienceRepository;
 import com.Candidate_Service.experience.service.ExperienceService;
+import com.Candidate_Service.skill.repository.SkillRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -38,6 +54,11 @@ public class CandidateService {
     private final ExperienceService experienceService;
     private final EducationService educationService;
     private final CandidateSkillService candidateSkillService;
+    private final CvService cvService;
+    private final SkillRepository skillRepository;
+    private final CandidateSkillRepository candidateSkillRepository;
+    private final EducationRepository educationRepository;
+    private final ExperienceRepository experienceRepository;
 
     public PageResponse<GetCandidateResponse> getAllCandidates(CandidateSearchRequest searchRequest, int page,
                                                                int size, String sortBy, String direction) {
@@ -50,6 +71,7 @@ public class CandidateService {
         Specification<Candidate> specification = Specification.unrestricted();
 
         specification = specification
+                .and(CandidateSpecification.hasName(searchRequest.getName()))
                 .and(CandidateSpecification.hasUserId(searchRequest.getUserId()))
                 .and(CandidateSpecification.hasAddress(searchRequest.getAddress()))
                 .and(CandidateSpecification.hasPhone(searchRequest.getPhone()))
@@ -74,6 +96,7 @@ public class CandidateService {
         for (Candidate candidate : candidateList) {
             GetCandidateResponse getCandidateResponse = new GetCandidateResponse();
             getCandidateResponse.setId(candidate.getId())
+                    .setName(candidate.getName())
                     .setUserId(candidate.getUserId())
                     .setPhone(candidate.getPhone())
                     .setAddress(candidate.getAddress())
@@ -113,7 +136,17 @@ public class CandidateService {
     }
 
     public CreateCandidateResponse createCandidate(CreateCandidateRequest candidateRequest) {
-        Candidate candidate = candidateMapper.toCandidate(candidateRequest);
+        AuthenticatedUser currentUser = CurrentUser.getCurrentUser();
+
+        Candidate candidate = new Candidate();
+        candidate.setId(candidateRequest.getId())
+                .setUserId(currentUser.getUserId())
+                .setName(candidateRequest.getName())
+                .setPhone(candidateRequest.getPhone())
+                .setAddress(candidateRequest.getAddress())
+                .setSummary(candidateRequest.getSummary())
+                .setStatus(CandidateStatus.ACTIVE);
+
         candidateRepository.save(candidate);
         return candidateMapper.toCreateCandidateResponse(candidate);
 
@@ -127,7 +160,9 @@ public class CandidateService {
                     "candidate with id (" + id + ") not found");
         }
         Candidate candidate = candidateOp.get();
-        candidate.setUserId(candidateRequest.getUserId())
+        candidate.setId(candidateRequest.getId())
+                .setName(candidateRequest.getName())
+                .setUserId(candidateRequest.getUserId())
                 .setPhone(candidateRequest.getPhone())
                 .setAddress(candidateRequest.getAddress())
                 .setSummary(candidateRequest.getSummary())
@@ -157,5 +192,73 @@ public class CandidateService {
         Candidate candidate = candidateOp.get();
         candidate.setStatus(CandidateStatus.APPROVED);
         candidateRepository.save(candidate);
+    }
+
+    public void fillCurrentCandidateData() {
+        AuthenticatedUser currentUser = CurrentUser.getCurrentUser();
+
+        ParsedCvResponse parsedCvResponse = cvService.loadParsedDataCv();
+
+        if (parsedCvResponse == null) {
+            throw new RecruitmentBusinessException(HttpStatus.NOT_FOUND, ErrorCode.NO_PARSED_DATA_FOUND.name(),
+                    "no parsed data found for candidate with id :" + currentUser.getUserId());
+        }
+        List<ParsedSkill> skillList = parsedCvResponse.getSkills();
+        for (ParsedSkill parsedSkill : skillList) {
+            String parsedSkillName = parsedSkill.getName();
+
+            Optional<Skill> skillOpBefore = skillRepository.findBySkillName(parsedSkillName);
+
+            if (skillOpBefore.isEmpty()) {
+                Skill skill = new Skill();
+                skill.setSkillName(parsedSkillName);
+                skillRepository.save(skill);
+            }
+            Optional<Skill> skillOpAfter = skillRepository.findBySkillName(parsedSkillName);
+           Skill skill = skillOpAfter.get();
+
+            if (candidateSkillRepository.findByCandidateIdAndSkillId(currentUser.getUserId(), skill.getId()).isEmpty()) {
+                CreateCandidateSkillRequest candidateSkillRequest = new CreateCandidateSkillRequest();
+                candidateSkillRequest.setCandidateId(currentUser.getUserId())
+                        .setSkillId(skillOpAfter.get().getId());
+
+                candidateSkillService.createCandidateSkill(candidateSkillRequest);
+
+            }
+        }
+
+        List<ParsedEducation> educationList = parsedCvResponse.getEducation();
+        for (ParsedEducation parsedEducation : educationList) {
+            if (educationRepository.findByCandidateIdAndInstitution(currentUser.getUserId(), parsedEducation.getInstitution()).isEmpty()) {
+
+                CreateEducationRequest createEducationRequest = new CreateEducationRequest();
+                createEducationRequest.setCandidateId(currentUser.getUserId())
+                        .setInstitution(parsedEducation.getInstitution())
+                        .setDegree(parsedEducation.getDegree())
+                        .setFieldOfStudy(parsedEducation.getFieldOfStudy())
+                        .setStartDate(parsedEducation.getStartDate())
+                        .setEndDate(parsedEducation.getEndDate());
+
+                educationService.createEducation(createEducationRequest);
+            }
+        }
+
+        List<ParsedExperience> experienceList = parsedCvResponse.getExperience();
+        for (ParsedExperience parsedExperience : experienceList) {
+            if (experienceRepository.findByCandidateIdAndCompanyName(currentUser.getUserId(), parsedExperience.getCompanyName()).isEmpty()) {
+                CreateExperienceRequest createExperienceRequest = new CreateExperienceRequest();
+                createExperienceRequest.setCandidateId(currentUser.getUserId())
+                        .setCompanyName(parsedExperience.getCompanyName())
+                        .setJobTitle(parsedExperience.getJobTitle())
+                        .setStartDate(parsedExperience.getStartDate())
+                        .setEndDate(parsedExperience.getEndDate());
+
+                experienceService.createExperience(createExperienceRequest);
+            }
+        }
+
+
+
+
     }
 }

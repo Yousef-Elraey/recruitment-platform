@@ -42,7 +42,6 @@ public class EducationService {
                     .setFieldOfStudy(education.getFieldOfStudy())
                     .setStartDate(education.getStartDate())
                     .setEndDate(education.getEndDate())
-                    .setCurrent(education.getCurrent())
                     .setDescription(education.getDescription());
             getEducationResponseList.add(getEducationResponse);
         }
@@ -62,11 +61,8 @@ public class EducationService {
                 .setFieldOfStudy(request.getFieldOfStudy())
                 .setStartDate(request.getStartDate())
                 .setEndDate(request.getEndDate())
-                .setCurrent(request.getCurrent())
                 .setDescription(request.getDescription());
-        if (request.getCurrent()) {
-            education.setEndDate(LocalDate.now());
-        }
+
         educationRepository.save(education);
         CreateEducationResponse response = new CreateEducationResponse();
         response.setCandidateId(education.getCandidate().getId())
@@ -75,7 +71,6 @@ public class EducationService {
                 .setFieldOfStudy(education.getFieldOfStudy())
                 .setStartDate(education.getStartDate())
                 .setEndDate(education.getEndDate())
-                .setCurrent(education.getCurrent())
                 .setDescription(education.getDescription());
 
         return response;
@@ -96,7 +91,6 @@ public class EducationService {
                 .setFieldOfStudy(education.getFieldOfStudy())
                 .setStartDate(education.getStartDate())
                 .setEndDate(education.getEndDate())
-                .setCurrent(education.getCurrent())
                 .setDescription(education.getDescription());
         return educationResponse;
     }
@@ -119,12 +113,8 @@ public class EducationService {
                 .setFieldOfStudy(request.getFieldOfStudy())
                 .setStartDate(request.getStartDate())
                 .setEndDate(request.getEndDate())
-                .setCurrent(request.getCurrent())
                 .setDescription(request.getDescription());
 
-        if (request.getCurrent()) {
-            education.setEndDate(LocalDate.now());
-        }
         educationRepository.save(education);
 
         UpdateEducationResponse response = new UpdateEducationResponse();
@@ -134,7 +124,6 @@ public class EducationService {
                 .setFieldOfStudy(education.getFieldOfStudy())
                 .setStartDate(education.getStartDate())
                 .setEndDate(education.getEndDate())
-                .setCurrent(education.getCurrent())
                 .setDescription(education.getDescription())
                 .setUpdatedAt(education.getUpdatedAt())
                 .setUpdatedBy(education.getUpdatedBy());
@@ -169,7 +158,6 @@ public class EducationService {
                     .setFieldOfStudy(education.getFieldOfStudy())
                     .setStartDate(education.getStartDate())
                     .setEndDate(education.getEndDate())
-                    .setCurrent(education.getCurrent())
                     .setDescription(education.getDescription())
                     .setCreatedAt(education.getCreatedAt())
                     .setUpdatedAt(education.getUpdatedAt())

@@ -87,6 +87,9 @@ public class CvParsingService {
                     cvText != null ? cvText.length() : 0
             );
 
+            System.out.println("\n\n" + cvText + "\n\n");
+
+
             ParsedCvResponse parsedCv =
                     cvAiParser.parse(cvText);
             log.info(

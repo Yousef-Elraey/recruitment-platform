@@ -33,9 +33,6 @@ public class UpdateEducationRequest extends BaseEntity {
 
     private LocalDate endDate;
 
-    @NotNull(message = "current id is required")
-    private Boolean current;
-
     @NotNull(message = "description id is required")
     private String description;
 

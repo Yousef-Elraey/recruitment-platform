@@ -21,7 +21,6 @@ public class UpdateExperienceResponse {
     private String jobTitle;
     private LocalDate startDate;
     private LocalDate endDate;
-    private Boolean current;
     private String description;
     private LocalDateTime updatedAt;
     private String updatedBy;

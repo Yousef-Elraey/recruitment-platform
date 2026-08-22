@@ -25,16 +25,11 @@ public class Education extends BaseEntity {
     @Column(nullable = false)
     private String degree;
 
-    @Column(nullable = false)
     private String fieldOfStudy;
 
-    @Column(nullable = false)
     private LocalDate startDate;
 
     private LocalDate endDate;
-
-    @Column(nullable = false)
-    private Boolean current;
 
     @Column(length = 2000)
     private String description;

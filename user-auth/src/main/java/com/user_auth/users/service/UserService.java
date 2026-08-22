@@ -49,6 +49,7 @@ public class UserService {
 
         Specification<User> specification = Specification.unrestricted();
         specification = specification
+                .and(UserSpecification.hasPhone(userSearchRequest.getPhone()))
                 .and(UserSpecification.hasId(userSearchRequest.getId()))
                 .and(UserSpecification.hasUserName(userSearchRequest.getUserName()))
                 .and(UserSpecification.hasEmail(userSearchRequest.getEmail()))
@@ -97,7 +98,8 @@ public class UserService {
         User user = userRepository.findById(id).orElseThrow(() ->
                 new RecruitmentBusinessException(HttpStatus.NOT_FOUND, "USER_NOT_FOUND", "user with id (" + id + ") enter not found"));
 
-        user.setUserName(updateUserRequest.getUserName())
+        user.setPhone(updateUserRequest.getPhone())
+                .setUserName(updateUserRequest.getUserName())
                 .setEmail(updateUserRequest.getEmail())
                 .setPassword(encoder.encode(updateUserRequest.getPassword()))
                 .setFullName(updateUserRequest.getFullName())

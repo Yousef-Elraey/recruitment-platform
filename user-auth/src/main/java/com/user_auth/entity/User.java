@@ -16,8 +16,13 @@ import lombok.experimental.Accessors;
 @NoArgsConstructor
 @Accessors(chain = true)
 public class User extends BaseEntity {
+
+
     @Column(nullable = false)
     private String userName;
+
+    @Column(nullable = false)
+    private String phone;
 
     @Column(nullable = false)
     private String email;
@@ -28,10 +33,18 @@ public class User extends BaseEntity {
     @Column(nullable = false)
     private String fullName;
 
+    private String address;
+
+    @Column(length = 2000)
+    private String summary;
+
     @Column(nullable = false)
     @Enumerated(EnumType.STRING)
     private Role role;
 
     @Column(nullable = false)
     private Boolean active;
+
+    @Enumerated(EnumType.STRING)
+    private Status status;
 }
