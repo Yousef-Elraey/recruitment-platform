@@ -122,6 +122,7 @@ public class UserService {
          String authHeader = request.getHeader("Authorization");
          if (authHeader == null || !authHeader.startsWith("Bearer "))
              throw new RecruitmentBusinessException(HttpStatus.FORBIDDEN,"Not_Allowed","this token is not allowed");
+
          String token = authHeader.substring(7);
         String email = jwtService.extractUsername(token);
        User currentUser = userRepository.findByEmail(email).orElseThrow(()->

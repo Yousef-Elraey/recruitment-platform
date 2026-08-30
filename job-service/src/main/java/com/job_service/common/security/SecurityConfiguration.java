@@ -28,8 +28,6 @@ public class SecurityConfiguration {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http)
             throws Exception {
-        System.out.println("JWT FILTER EXECUTED");
-
         http
                 .csrf(AbstractHttpConfigurer::disable)
                 .sessionManagement(session ->

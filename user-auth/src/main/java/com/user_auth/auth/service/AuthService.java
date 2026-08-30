@@ -7,6 +7,7 @@ import com.user_auth.auth.dto.request.RegisterRequest;
 import com.user_auth.auth.dto.response.RegisterResponse;
 import com.user_auth.client.candidate.CandidateClient;
 import com.user_auth.client.dto.CandidateCreateRequestDto;
+import com.user_auth.common.exception.ErrorCode;
 import com.user_auth.common.exception.RecruitmentBusinessException;
 import com.user_auth.common.security.JwtService;
 import com.user_auth.entity.Role;
@@ -40,8 +41,15 @@ public class AuthService {
     private final CandidateClient candidateClient;
 
     public RegisterResponse register(RegisterRequest request) {
+
+        if (userRepository.findByPhone(request.getPhone()).isPresent()){
+            throw new RecruitmentBusinessException(HttpStatus.CONFLICT, ErrorCode.USER_ALREADY_EXIST.name(),
+                    "user with phone ("+request.getPhone()+") already exist");
+        }
+
         User user = authMapper.toUser(request);
         user.setPassword(encoder.encode(request.getPassword()));
+
 
         User savedUser = userRepository.save(user);
         CandidateCreateRequestDto candidateCreateRequestDto = new CandidateCreateRequestDto();
@@ -55,7 +63,6 @@ public class AuthService {
         if (savedUser.getRole() == Role.CANDIDATE) {
             candidateClient.createCandidate(candidateCreateRequestDto);
         }
-        //we want check is the user-role is ''candidate call the candidate-service and create a candidate record in the candidate table
         return authMapper.toRegisterResponse(user);
     }
 
@@ -79,7 +86,7 @@ public class AuthService {
 
             return response;
         }
-        throw new RecruitmentBusinessException(HttpStatus.FORBIDDEN, "NOT_AUTHENTICATION", "you are not authenticated");
+        throw new RecruitmentBusinessException(HttpStatus.UNAUTHORIZED, "NOT_AUTHENTICATION", "you are not authenticated");
 
     }
 

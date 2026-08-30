@@ -34,6 +34,13 @@ public class ApplicationController {
 
     }
 
+    @PatchMapping("/next-face")
+    @Operation(summary = "move to next face")
+    @PreAuthorize("hasAnyRole('ADMIN','HR','INTERVIEWER')")
+    public ResponseEntity<GetCandidateFaceResponse> nextFace(@RequestBody NextFaceRequest request) {
+        return new ResponseEntity<>(applicationService.nextFace(request), HttpStatus.OK);
+
+    }
     @PatchMapping("/assign-recruiter")
     @Operation(summary = "assign recruiter")
     @PreAuthorize("hasAnyRole('ADMIN','HR','INTERVIEWER')")
@@ -49,13 +56,7 @@ public class ApplicationController {
 
     }
 
-    @PatchMapping("/next-face")
-    @Operation(summary = "move to next face")
-    @PreAuthorize("hasAnyRole('ADMIN','HR','INTERVIEWER')")
-    public ResponseEntity<GetCandidateFaceResponse> nextFace(@RequestBody NextFaceRequest request) {
-        return new ResponseEntity<>(applicationService.nextFace(request), HttpStatus.OK);
 
-    }
     @PatchMapping("/reject/{applicationId}")
     @Operation(summary = "reject an application")
     @PreAuthorize("hasAnyRole('ADMIN','HR','INTERVIEWER')")
