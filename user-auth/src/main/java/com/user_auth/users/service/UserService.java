@@ -2,6 +2,7 @@ package com.user_auth.users.service;
 
 import com.user_auth.common.exception.RecruitmentBusinessException;
 import com.user_auth.common.security.JwtService;
+import com.user_auth.entity.Status;
 import com.user_auth.users.dto.request.UpdateRoleRequest;
 import com.user_auth.users.dto.request.UpdateUserRequest;
 import com.user_auth.users.dto.request.UserSearchRequest;
@@ -96,7 +97,7 @@ public class UserService {
 
     public UpdateUserResponse updateUserData(Long id, UpdateUserRequest updateUserRequest) {
         User user = userRepository.findById(id).orElseThrow(() ->
-                new RecruitmentBusinessException(HttpStatus.NOT_FOUND, "USER_NOT_FOUND", "user with id (" + id + ") enter not found"));
+                new RecruitmentBusinessException(HttpStatus.NOT_FOUND, "USER_NOT_FOUND", "user with id (" + id + ") not found"));
 
         user.setPhone(updateUserRequest.getPhone())
                 .setUserName(updateUserRequest.getUserName())
@@ -134,7 +135,8 @@ public class UserService {
     public void deleteUser(Long id) {
        User user = userRepository.findById(id).orElseThrow(()->
                 new RecruitmentBusinessException(HttpStatus.NOT_FOUND,"NOT_FOUND","user with id (\" + id + \") not found"));
-        user.setActive(false);
+        user.setActive(false)
+            .setStatus(Status.DELETED);
         userRepository.save(user);
     }
 }

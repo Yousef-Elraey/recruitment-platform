@@ -14,7 +14,7 @@ import lombok.experimental.Accessors;
 @Accessors(chain = true)
 public class UpdateUserRequest {
 
-    @NotBlank(message = "userName is required")
+    @NotBlank(message = "phone is required")
     private String phone;
 
     @NotBlank(message = "userName is required")
